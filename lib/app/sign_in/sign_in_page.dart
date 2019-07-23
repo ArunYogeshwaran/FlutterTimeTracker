@@ -6,8 +6,8 @@ import 'package:time_tracker_flutter_course/app/sign_in/sign_in_button.dart';
 import 'package:time_tracker_flutter_course/app/sign_in/social_sign_in_button.dart';
 
 class SignInPage extends StatelessWidget {
-
   SignInPage({@required this.onSignIn});
+
   final Function(FirebaseUser) onSignIn;
 
   Future<void> _signInAnonymously() async {
@@ -19,6 +19,7 @@ class SignInPage extends StatelessWidget {
       print(e.toString());
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
