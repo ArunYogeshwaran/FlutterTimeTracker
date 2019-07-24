@@ -4,7 +4,7 @@ Source code for my Time Tracker Flutter Course on Udemy.
 
 ## Running the project with Firebase
 
-This project uses `com.codingwithflutter.timetrackerfluttercourse` as the default package name.
+This project uses `com.ayogeshwaran.codingwithflutter.timetrackerfluttercourse` as the default package name.
 
 You can clone this repo and reuse this package name if you want, but you will need to register the project with your on Firebase account.
 
