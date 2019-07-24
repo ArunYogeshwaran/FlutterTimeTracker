@@ -2,17 +2,24 @@ import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:meta/meta.dart';
+import 'package:google_sign_in/google_sign_in.dart'
 
 class User {
   User({@required this.uid});
+
   final String uid;
 }
 
 abstract class AuthBase {
   Stream<User> get onAuthStateChanged;
+
   Future<User> currentUser();
+
   Future<User> signInAnonymously();
+
   Future<void> signOut();
+
+  Future<User> signInWithGoogle();
 }
 
 class Auth implements AuthBase {
@@ -24,9 +31,10 @@ class Auth implements AuthBase {
     }
     return User(uid: user.uid);
   }
-   Stream<User> get onAuthStateChanged {
+
+  Stream<User> get onAuthStateChanged {
     return _firebaseAuth.onAuthStateChanged.map(_userFromFirebase);
-   }
+  }
 
   Future<User> currentUser() async {
     FirebaseUser user = await _firebaseAuth.currentUser();
@@ -36,6 +44,25 @@ class Auth implements AuthBase {
   Future<User> signInAnonymously() async {
     FirebaseUser user = await _firebaseAuth.signInAnonymously();
     return _userFromFirebase(user);
+  }
+
+  Future<User> signInWithGoogle() async {
+    GoogleSignIn googleSignIn = GoogleSignIn();
+    GoogleSignInAccount googleUser = await googleSignIn.signIn();
+    if (googleUser != null) {
+      GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+      if (googleAuth.idToken != null && googleAuth.accessToken != null) {
+        FirebaseUser user = await _firebaseAuth.signInWithGoogle(
+                idToken: googleAuth.idToken,
+                accessToken: googleAuth.accessToken,
+              );
+        return _userFromFirebase(user);
+      } else {
+        throw StateError('Google Auth token missing');
+      }
+    } else {
+      throw StateError('Google sign in aborted');
+    }
   }
 
   Future<void> signOut() async {
