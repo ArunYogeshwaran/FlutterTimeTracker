@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:meta/meta.dart';
-import 'package:google_sign_in/google_sign_in.dart'
+import 'package:google_sign_in/google_sign_in.dart';
 
 class User {
   User({@required this.uid});
@@ -66,6 +66,8 @@ class Auth implements AuthBase {
   }
 
   Future<void> signOut() async {
+    final googleSignIn = GoogleSignIn();
+    googleSignIn.signOut();
     return await _firebaseAuth.signOut();
   }
 }
