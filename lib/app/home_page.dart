@@ -19,7 +19,7 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Center(child: Text("Home Page")),
+        title: Text("Home Page"),
         actions: <Widget>[
           FlatButton(
             child: Text(
