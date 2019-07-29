@@ -7,6 +7,7 @@ class CustomRaisedButton extends StatelessWidget {
     this.borderRadius: 6.0,
     this.height: 50.0,
     this.onPressed,
+    this.isLoading: false,
   }) : assert(borderRadius != null);
 
   final Widget child;
@@ -14,13 +15,16 @@ class CustomRaisedButton extends StatelessWidget {
   final double borderRadius;
   final double height;
   final VoidCallback onPressed;
+  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       height: height,
       child: RaisedButton(
-        child: child,
+        child: isLoading
+        ? CircularProgressIndicator()
+        : child,
         color: color,
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(borderRadius))),

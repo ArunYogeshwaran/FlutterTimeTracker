@@ -8,9 +8,10 @@ import 'package:time_tracker_flutter_course/services/auth.dart';
 enum EmailSignInFormType { signIn, register }
 
 class EmailSignInForm extends StatefulWidget with EmailAndPasswordValidators {
-  EmailSignInForm({@required this.authBase});
+  EmailSignInForm({@required this.authBase, this.isLoading: false});
 
   final AuthBase authBase;
+  final bool isLoading;
 
   @override
   _EmailSignInFormState createState() => _EmailSignInFormState();
@@ -83,6 +84,7 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
       FormSubmitButton(
         text: primaryText,
         onPressed: submitEnabled ? _submit :  null,
+        isLoading: _isLoading,
       ),
       SizedBox(
         height: 8.0,
