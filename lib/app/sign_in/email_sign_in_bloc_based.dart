@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:time_tracker_flutter_course/app/sign_in/email_sign_in_bloc.dart';
 import 'package:time_tracker_flutter_course/app/sign_in/email_sign_in_model.dart';
-import 'package:time_tracker_flutter_course/app/sign_in/validators.dart';
 import 'package:time_tracker_flutter_course/common_widgets/form_submit_button.dart';
 import 'package:time_tracker_flutter_course/common_widgets/platform_alert_dialog.dart';
 
-class EmailSignInFormBlocBased extends StatefulWidget with EmailAndPasswordValidators {
+class EmailSignInFormBlocBased extends StatefulWidget {
   EmailSignInFormBlocBased({@required this.bloc});
+
   final EmailSignInBloc bloc;
 
   @override
@@ -44,16 +44,6 @@ class _EmailSignInFormBlocBasedState extends State<EmailSignInFormBlocBased> {
   }
 
   List<Widget> _buildChildren(BuildContext context, EmailSignInModel model) {
-    final primaryText = model.formType == EmailSignInFormType.signIn
-        ? "Sign in"
-        : 'Create an account';
-    final secondaryText = model.formType == EmailSignInFormType.register
-        ? 'Need an account? Register'
-        : 'Have an account? Sign in';
-    bool submitEnabled = widget.emailValidator.isValid(model.email) &&
-        widget.passwordValidator.isValid(model.password) &&
-        !model.isLoading;
-
     return [
       _buildEmailTextField(context, model),
       SizedBox(
@@ -64,50 +54,46 @@ class _EmailSignInFormBlocBasedState extends State<EmailSignInFormBlocBased> {
         height: 8.0,
       ),
       FormSubmitButton(
-        text: primaryText,
-        onPressed: submitEnabled ? () => _submit(context) : null,
+        text: model.primaryButtonText,
+        onPressed: model.canSubmit ? () => _submit(context) : null,
         isLoading: model.isLoading,
       ),
       SizedBox(
         height: 8.0,
       ),
       FlatButton(
-        child: Text(secondaryText),
+        child: Text(model.secondaryButtonText),
         onPressed: !model.isLoading ? _toggleFormType : null,
       ),
     ];
   }
 
   TextField _buildEmailTextField(BuildContext context, EmailSignInModel model) {
-    bool showErrorText =
-        model.submitted && !widget.emailValidator.isValid(model.email);
     return TextField(
       controller: _emailController,
       focusNode: _emailFocusNode,
       decoration: InputDecoration(
         labelText: 'Email',
         hintText: 'test@test.com',
-        errorText: showErrorText ? widget.emptyEmail : null,
+        errorText: model.passWordErrorText,
         enabled: model.isLoading == false,
       ),
       autocorrect: false,
       keyboardType: TextInputType.emailAddress,
       textInputAction: TextInputAction.next,
-      onChanged:  widget.bloc.updateEmail,
+      onChanged: widget.bloc.updateEmail,
       onEditingComplete: () => _emailEditingComplete(context, model),
     );
   }
 
   TextField _buildPasswordTextField(
       BuildContext context, EmailSignInModel model) {
-    bool showErrorText =
-        model.submitted && !widget.passwordValidator.isValid(model.password);
     return TextField(
       controller: _passwordController,
       focusNode: _passwordFocusNode,
       decoration: InputDecoration(
         labelText: 'Password',
-        errorText: showErrorText ? widget.emptyPassword : null,
+        errorText: model.emailErrorText,
         enabled: model.isLoading == false,
       ),
       obscureText: true,
@@ -137,7 +123,7 @@ class _EmailSignInFormBlocBasedState extends State<EmailSignInFormBlocBased> {
   }
 
   void _emailEditingComplete(BuildContext context, EmailSignInModel model) {
-    final newFocus = widget.emailValidator.isValid(model.email)
+    final newFocus = model.emailValidator.isValid(model.email)
         ? _passwordFocusNode
         : _emailFocusNode;
     FocusScope.of(context).requestFocus(newFocus);
