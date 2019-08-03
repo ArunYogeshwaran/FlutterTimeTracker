@@ -23,7 +23,7 @@ class _EmailSignInFormBlocBasedState extends State<EmailSignInFormBlocBased> {
 
   final FocusNode _passwordFocusNode = FocusNode();
 
-  Future<void> _submit(BuildContext context) async {
+  Future<void> _submit() async {
     try {
       await widget.bloc.submit();
       Navigator.of(context).pop();
@@ -43,9 +43,9 @@ class _EmailSignInFormBlocBasedState extends State<EmailSignInFormBlocBased> {
     _passwordController.clear();
   }
 
-  List<Widget> _buildChildren(BuildContext context, EmailSignInModel model) {
+  List<Widget> _buildChildren(EmailSignInModel model) {
     return [
-      _buildEmailTextField(context, model),
+      _buildEmailTextField(model),
       SizedBox(
         height: 8.0,
       ),
@@ -55,7 +55,7 @@ class _EmailSignInFormBlocBasedState extends State<EmailSignInFormBlocBased> {
       ),
       FormSubmitButton(
         text: model.primaryButtonText,
-        onPressed: model.canSubmit ? () => _submit(context) : null,
+        onPressed: model.canSubmit ? _submit : null,
         isLoading: model.isLoading,
       ),
       SizedBox(
@@ -68,7 +68,7 @@ class _EmailSignInFormBlocBasedState extends State<EmailSignInFormBlocBased> {
     ];
   }
 
-  TextField _buildEmailTextField(BuildContext context, EmailSignInModel model) {
+  TextField _buildEmailTextField(EmailSignInModel model) {
     return TextField(
       controller: _emailController,
       focusNode: _emailFocusNode,
@@ -82,7 +82,7 @@ class _EmailSignInFormBlocBasedState extends State<EmailSignInFormBlocBased> {
       keyboardType: TextInputType.emailAddress,
       textInputAction: TextInputAction.next,
       onChanged: widget.bloc.updateEmail,
-      onEditingComplete: () => _emailEditingComplete(context, model),
+      onEditingComplete: () => _emailEditingComplete(model),
     );
   }
 
@@ -99,7 +99,7 @@ class _EmailSignInFormBlocBasedState extends State<EmailSignInFormBlocBased> {
       obscureText: true,
       textInputAction: TextInputAction.done,
       onChanged: widget.bloc.updatePassword,
-      onEditingComplete: () => _submit(context),
+      onEditingComplete: _submit,
     );
   }
 
@@ -115,14 +115,14 @@ class _EmailSignInFormBlocBasedState extends State<EmailSignInFormBlocBased> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             mainAxisSize: MainAxisSize.min,
-            children: _buildChildren(context, model),
+            children: _buildChildren(model),
           ),
         );
       },
     );
   }
 
-  void _emailEditingComplete(BuildContext context, EmailSignInModel model) {
+  void _emailEditingComplete(EmailSignInModel model) {
     final newFocus = model.emailValidator.isValid(model.email)
         ? _passwordFocusNode
         : _emailFocusNode;
