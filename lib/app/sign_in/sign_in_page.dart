@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:time_tracker_flutter_course/app/sign_in/sign_in_bloc.dart';
+import 'package:time_tracker_flutter_course/app/sign_in/sign_in_manager.dart';
 import 'package:time_tracker_flutter_course/app/sign_in/sign_in_button.dart';
 import 'package:time_tracker_flutter_course/app/sign_in/social_sign_in_button.dart';
 import 'package:time_tracker_flutter_course/common_widgets/platform_exception_alert_dialog.dart';
@@ -12,25 +12,44 @@ import 'package:time_tracker_flutter_course/services/auth.dart';
 import 'email_sign_in_page.dart';
 
 class SignInPage extends StatelessWidget {
-  final SignInBloc bloc;
-  const SignInPage({Key key, this.bloc}) : super(key: key);
+  final SignInManager manager;
+  final bool isLoading;
 
-  static Widget create(BuildContext context,) {
+  const SignInPage({
+    Key key,
+    @required this.manager,
+    @required this.isLoading,
+  }) : super(key: key);
+
+  static Widget create(BuildContext context) {
+    // Andrea's flutter course - Udemy - Video #271 for explanation of this method
     final auth = Provider.of<AuthBase>(context);
-    return Provider<SignInBloc>(
-      // Initialize "SignInBloc" inside provider only - See video 268 in Andrea's flutter course - Udemy - This is to avoid some unexpected side effects
-      // Always create blocs inside the builder when we use provider
-      builder: (context) => SignInBloc(auth: auth),
-      dispose: (context, bloc) => bloc.dispose(),
-      child: Consumer<SignInBloc>(
-        builder: (context, bloc, _) => SignInPage(bloc: bloc),
+    return Provider<ValueNotifier<bool>>(
+      builder: (context) => ValueNotifier<bool>(false),
+      dispose: (context, valueNotifier) => valueNotifier.dispose(),
+      child: Consumer<ValueNotifier<bool>>(
+        builder: (context, valueNotifier, _) => Provider<SignInManager>(
+              // Initialize "SignInBloc" inside provider only - See video #268 in Andrea's flutter course - Udemy - This is to avoid some unexpected side effects
+              // Always create blocs inside the builder when we use provider
+              builder: (context) =>
+                  SignInManager(auth: auth, isLoading: valueNotifier),
+              child: Consumer<SignInManager>(
+                builder: (context, manager, _) => ValueListenableBuilder<bool>(
+                      valueListenable: valueNotifier,
+                      builder: (context, isLoading, _) => SignInPage(
+                            manager: manager,
+                            isLoading: isLoading,
+                          ),
+                    ),
+              ),
+            ),
       ),
     );
   }
 
   Future<void> _signInAnonymously(BuildContext context) async {
     try {
-      await bloc.signInAnonymously();
+      await manager.signInAnonymously();
     } on PlatformException catch (e) {
       _showSignInError(context, e);
     }
@@ -38,7 +57,7 @@ class SignInPage extends StatelessWidget {
 
   Future<void> _signInWithGoogle(BuildContext context) async {
     try {
-      await bloc.signInWithGoogle();
+      await manager.signInWithGoogle();
     } on PlatformException catch (e) {
       if (e.code != 'ERROR_ABORTED_BY_USER') {
         _showSignInError(context, e);
@@ -48,7 +67,7 @@ class SignInPage extends StatelessWidget {
 
   Future<void> _signInWithFacebook(BuildContext context) async {
     try {
-      await bloc.signInWithFacebook();
+      await manager.signInWithFacebook();
     } on PlatformException catch (e) {
       if (e.code != 'ERROR_ABORTED_BY_USER') {
         _showSignInError(context, e);
@@ -72,22 +91,18 @@ class SignInPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isLoading = Provider.of<ValueNotifier<bool>>(context);
     return Scaffold(
       appBar: AppBar(
         title: Center(child: Text('Time Tracker')),
         elevation: 4.0,
       ),
-      body: StreamBuilder<bool>(
-          stream: bloc.isLoadingStream,
-          initialData: false,
-          builder: (context, snapshot) {
-            return _buildContent(context, snapshot.data);
-          }),
+      body: _buildContent(context),
       backgroundColor: Colors.grey[200],
     );
   }
 
-  Widget _buildContent(BuildContext context, bool isLoading) {
+  Widget _buildContent(BuildContext context) {
     return Padding(
       padding: EdgeInsets.all(16.0),
       child: Column(
@@ -96,7 +111,7 @@ class SignInPage extends StatelessWidget {
         children: <Widget>[
           SizedBox(
             height: 50.0,
-            child: _buildHeader(isLoading),
+            child: _buildHeader(),
           ),
           SizedBox(height: 50.0),
           SocialSignInButton(
@@ -139,7 +154,7 @@ class SignInPage extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader(bool isLoading) {
+  Widget _buildHeader() {
     if (isLoading) {
       return Center(
         child: CircularProgressIndicator(),
