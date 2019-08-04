@@ -15,7 +15,7 @@ class LandingPage extends StatelessWidget {
           if (snapshot.connectionState == ConnectionState.active) {
             User user = snapshot.data;
             if (user == null) {
-              return _buildSignInPage();
+              return _buildSignInPage(auth);
             }
             return HomePage();
           } else {
@@ -26,12 +26,12 @@ class LandingPage extends StatelessWidget {
         });
   }
 
-  Widget _buildSignInPage() {
-    final signInBloc = SignInBloc();
+  Widget _buildSignInPage(AuthBase auth) {
+    final signInBloc = SignInBloc(auth: auth);
     return StatefulProvider<SignInBloc>(
       valueBuilder: (context) => signInBloc,
       onDispose: (context, bloc) => bloc.dispose(),
-      child: SignInPage(bloc: SignInBloc(),),
+      child: SignInPage(bloc: signInBloc),
     );
   }
 }
