@@ -61,7 +61,8 @@ class Auth implements AuthBase {
     return _userFromFirebase(user);
   }
 
-  Future<User> createUserWithEmailAndPassword(String email, String password) async {
+  Future<User> createUserWithEmailAndPassword(
+      String email, String password) async {
     FirebaseUser user = await _firebaseAuth.createUserWithEmailAndPassword(
       email: email,
       password: password,
@@ -75,10 +76,11 @@ class Auth implements AuthBase {
     if (googleUser != null) {
       GoogleSignInAuthentication googleAuth = await googleUser.authentication;
       if (googleAuth.idToken != null && googleAuth.accessToken != null) {
-        FirebaseUser user = await _firebaseAuth.signInWithGoogle(
+        FirebaseUser user = await _firebaseAuth
+            .signInWithCredential(GoogleAuthProvider.getCredential(
           idToken: googleAuth.idToken,
           accessToken: googleAuth.accessToken,
-        );
+        ));
         print('Success! uid: ${user.uid}');
         return _userFromFirebase(user);
       } else {
@@ -96,9 +98,10 @@ class Auth implements AuthBase {
       ['public_profile'],
     );
     if (facebookLoginResult.accessToken != null) {
-      FirebaseUser user = await _firebaseAuth.signInWithFacebook(
+      FirebaseUser user = await _firebaseAuth
+          .signInWithCredential(FacebookAuthProvider.getCredential(
         accessToken: facebookLoginResult.accessToken.token,
-      );
+      ));
       return _userFromFirebase(user);
     } else {
       throw StateError('Missing Facebook Access token');
