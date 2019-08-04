@@ -156,12 +156,20 @@ class _EditJobPageState extends State<EditJobPage> {
           Navigator.of(context).pop();
         }
       } on PlatformException catch (e) {
-        print(e.toString());
         PlatformExceptionAlertDialog(
           title: 'Operation failed',
           exception: e,
         ).show(context);
       }
+    }
+  }
+
+  void _delete(BuildContext context, Job job) async {
+    try {
+      final database = Provider.of<Database>(context);
+      await database.deleteJob(job);
+    } on PlatformException catch (e) {
+      print(e);
     }
   }
 
