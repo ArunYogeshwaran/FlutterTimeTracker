@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/services.dart';
 import 'package:meta/meta.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
@@ -84,10 +85,16 @@ class Auth implements AuthBase {
         print('Success! uid: ${user.uid}');
         return _userFromFirebase(user);
       } else {
-        throw StateError('Google Auth token missing');
+        throw PlatformException(
+          code: 'ERROR_MISSING_GOOGLE_AUTH_TOKEN',
+          message: 'Google Auth token missing',
+        );
       }
     } else {
-      throw StateError('Google sign in aborted');
+      throw PlatformException(
+        code: 'ERROR_ABORTED_BY_USER',
+        message: 'Sign in aborted by user',
+      );
     }
   }
 
@@ -104,7 +111,10 @@ class Auth implements AuthBase {
       ));
       return _userFromFirebase(user);
     } else {
-      throw StateError('Missing Facebook Access token');
+      throw PlatformException(
+        code: 'ERROR_ABORTED_BY_USER',
+        message: 'Sign in aborted by user',
+      );
     }
   }
 
