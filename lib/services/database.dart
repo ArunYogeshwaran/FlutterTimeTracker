@@ -27,7 +27,7 @@ class FirestoreDatabase implements Database {
           (documentSnapShot) => Job(
               name: documentSnapShot.data['name'],
               ratePerHour: documentSnapShot.data['ratePerHour']),
-        ));
+        ).toList());
   }
 
   Future<void> _setData({String path, Map<String, dynamic> data}) async {
