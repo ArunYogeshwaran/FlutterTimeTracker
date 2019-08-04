@@ -81,7 +81,7 @@ class JobsPage extends StatelessWidget {
           );
         }
         return Center(
-          child: Text('Some error occured'),
+          child: CircularProgressIndicator(),
         );
       },
     );

@@ -23,6 +23,6 @@ class EmptyContent extends StatelessWidget {
           ),
         ],
       ),
-    )
+    );
   }
 }
