@@ -61,7 +61,7 @@ packages:
       name: flutter_facebook_login
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.2.0"
+    version: "2.0.1"
   flutter_hooks:
     dependency: transitive
     description:
@@ -80,7 +80,7 @@ packages:
       name: google_sign_in
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.3.0+1"
+    version: "4.0.6"
   matcher:
     dependency: transitive
     description:
