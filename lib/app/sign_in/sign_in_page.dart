@@ -17,11 +17,14 @@ class SignInPage extends StatelessWidget {
 
   static Widget create(BuildContext context,) {
     final auth = Provider.of<AuthBase>(context);
-    final signInBloc = SignInBloc(auth: auth);
-    return StatefulProvider<SignInBloc>(
-      valueBuilder: (context) => signInBloc,
-      onDispose: (context, bloc) => bloc.dispose(),
-      child: SignInPage(bloc: signInBloc),
+    return Provider<SignInBloc>(
+      // Initialize "SignInBloc" inside provider only - See video 268 in Andrea's flutter course - Udemy - This is to avoid some unexpected side effects
+      // Always create blocs inside the builder when we use provider
+      builder: (context) => SignInBloc(auth: auth),
+      dispose: (context, bloc) => bloc.dispose(),
+      child: Consumer<SignInBloc>(
+        builder: (context, bloc, _) => SignInPage(bloc: bloc),
+      ),
     );
   }
 
