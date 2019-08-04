@@ -24,6 +24,15 @@ class _EmailSignInFormBlocBasedState extends State<EmailSignInFormBlocBased> {
 
   final FocusNode _passwordFocusNode = FocusNode();
 
+  @override
+  void dispose() {
+    super.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    _emailFocusNode.dispose();
+    _passwordFocusNode.dispose();
+  }
+
   Future<void> _submit() async {
     try {
       await widget.bloc.submit();

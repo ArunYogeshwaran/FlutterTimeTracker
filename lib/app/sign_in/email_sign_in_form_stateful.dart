@@ -25,6 +25,15 @@ class _EmailSignInFormStatefulState extends State<EmailSignInFormStateful> {
   bool _submitted = false;
   bool _isLoading = false;
 
+  @override
+  void dispose() {
+    super.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    _emailFocusNode.dispose();
+    _passwordFocusNode.dispose();
+  }
+
   Future<void> _submit() async {
     setState(() {
       _submitted = true;
