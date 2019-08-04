@@ -2,17 +2,28 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'package:time_tracker_flutter_course/app/sign_in/sign_in_bloc.dart';
 import 'package:time_tracker_flutter_course/app/sign_in/sign_in_button.dart';
 import 'package:time_tracker_flutter_course/app/sign_in/social_sign_in_button.dart';
 import 'package:time_tracker_flutter_course/common_widgets/platform_exception_alert_dialog.dart';
+import 'package:time_tracker_flutter_course/services/auth.dart';
 
 import 'email_sign_in_page.dart';
 
 class SignInPage extends StatelessWidget {
   final SignInBloc bloc;
-
   const SignInPage({Key key, this.bloc}) : super(key: key);
+
+  static Widget create(BuildContext context,) {
+    final auth = Provider.of<AuthBase>(context);
+    final signInBloc = SignInBloc(auth: auth);
+    return StatefulProvider<SignInBloc>(
+      valueBuilder: (context) => signInBloc,
+      onDispose: (context, bloc) => bloc.dispose(),
+      child: SignInPage(bloc: signInBloc),
+    );
+  }
 
   Future<void> _signInAnonymously(BuildContext context) async {
     try {

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:time_tracker_flutter_course/app/home_page.dart';
-import 'package:time_tracker_flutter_course/app/sign_in/sign_in_bloc.dart';
 import 'package:time_tracker_flutter_course/app/sign_in/sign_in_page.dart';
 import 'package:time_tracker_flutter_course/services/auth.dart';
 
@@ -15,7 +14,7 @@ class LandingPage extends StatelessWidget {
           if (snapshot.connectionState == ConnectionState.active) {
             User user = snapshot.data;
             if (user == null) {
-              return _buildSignInPage(auth);
+              return SignInPage.create(context);
             }
             return HomePage();
           } else {
@@ -24,14 +23,5 @@ class LandingPage extends StatelessWidget {
             );
           }
         });
-  }
-
-  Widget _buildSignInPage(AuthBase auth) {
-    final signInBloc = SignInBloc(auth: auth);
-    return StatefulProvider<SignInBloc>(
-      valueBuilder: (context) => signInBloc,
-      onDispose: (context, bloc) => bloc.dispose(),
-      child: SignInPage(bloc: signInBloc),
-    );
   }
 }
