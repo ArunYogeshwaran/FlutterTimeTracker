@@ -26,6 +26,7 @@ class CustomRaisedButton extends StatelessWidget {
         ? CircularProgressIndicator()
         : child,
         color: color,
+        disabledColor: color,
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(borderRadius))),
         onPressed: onPressed,
