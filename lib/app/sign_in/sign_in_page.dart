@@ -24,9 +24,8 @@ class SignInPage extends StatelessWidget {
   static Widget create(BuildContext context) {
     // Andrea's flutter course - Udemy - Video #271 for explanation of this method
     final auth = Provider.of<AuthBase>(context);
-    return Provider<ValueNotifier<bool>>(
+    return ChangeNotifierProvider<ValueNotifier<bool>>(
       builder: (context) => ValueNotifier<bool>(false),
-      dispose: (context, valueNotifier) => valueNotifier.dispose(),
       child: Consumer<ValueNotifier<bool>>(
         builder: (context, valueNotifier, _) => Provider<SignInManager>(
               // Initialize "SignInBloc" inside provider only - See video #268 in Andrea's flutter course - Udemy - This is to avoid some unexpected side effects
@@ -34,13 +33,10 @@ class SignInPage extends StatelessWidget {
               builder: (context) =>
                   SignInManager(auth: auth, isLoading: valueNotifier),
               child: Consumer<SignInManager>(
-                builder: (context, manager, _) => ValueListenableBuilder<bool>(
-                      valueListenable: valueNotifier,
-                      builder: (context, isLoading, _) => SignInPage(
+                builder: (context, manager, _) =>  SignInPage(
                             manager: manager,
-                            isLoading: isLoading,
+                            isLoading: valueNotifier.value,
                           ),
-                    ),
               ),
             ),
       ),
