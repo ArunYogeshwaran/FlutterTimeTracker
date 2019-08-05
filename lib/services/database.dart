@@ -28,8 +28,9 @@ class FirestoreDatabase implements Database {
       );
 
   @override
-  Future<void> deleteJob(Job job) async =>
-      await _service.deleteData(path: APIPath.job(uid, job.id),);
+  Future<void> deleteJob(Job job) async => await _service.deleteData(
+        path: APIPath.job(uid, job.id),
+      );
 
   @override
   Stream<List<Job>> jobsStream() {
