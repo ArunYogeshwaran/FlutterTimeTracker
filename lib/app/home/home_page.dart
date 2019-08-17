@@ -3,6 +3,8 @@ import 'package:time_tracker_flutter_course/app/home/cupertino_home_scaffold.dar
 import 'package:time_tracker_flutter_course/app/home/jobs/jobs_page.dart';
 import 'package:time_tracker_flutter_course/app/home/tab_item.dart';
 
+import 'account/account_page.dart';
+
 class HomePage extends StatefulWidget {
   @override
   _HomePageState createState() => _HomePageState();
@@ -15,7 +17,7 @@ class _HomePageState extends State<HomePage> {
     return {
       TabItem.jobs: (_) => JobsPage(),
       TabItem.entires: (_) => Container(),
-      TabItem.account: (_) => Container(),
+      TabItem.account: (_) => AccountPage(),
     };
   }
 

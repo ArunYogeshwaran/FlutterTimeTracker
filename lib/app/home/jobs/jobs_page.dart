@@ -14,27 +14,6 @@ import 'package:time_tracker_flutter_course/services/auth.dart';
 import 'package:time_tracker_flutter_course/services/database.dart';
 
 class JobsPage extends StatelessWidget {
-  Future<void> _signOut(BuildContext context) async {
-    try {
-      final auth = Provider.of<AuthBase>(context);
-      await auth.signOut();
-    } catch (e) {
-      print(e.toString());
-    }
-  }
-
-  Future<void> _confirmSignOut(BuildContext context) async {
-    final didRequestSignout = await PlatformAlertDialog(
-      title: 'Logout',
-      content: 'Are you sure that you want to logout?',
-      cancelActionText: 'Cancel',
-      defaultActionText: 'Logout',
-    ).show(context);
-    if (didRequestSignout == true) {
-      _signOut(context);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,16 +27,6 @@ class JobsPage extends StatelessWidget {
                   Provider.of<Database>(context),
                   null,
                 ),
-          ),
-          FlatButton(
-            child: Text(
-              'Logout',
-              style: TextStyle(
-                fontSize: 18.0,
-                color: Colors.white,
-              ),
-            ),
-            onPressed: () => _confirmSignOut(context),
           ),
         ],
       ),
