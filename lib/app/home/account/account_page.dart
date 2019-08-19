@@ -6,6 +6,7 @@ import 'package:time_tracker_flutter_course/services/auth.dart';
 class AccountPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final user = Provider.of<User>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text('Account'),

@@ -7,9 +7,14 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:meta/meta.dart';
 
 class User {
-  User({@required this.uid});
+  User(
+      {@required this.photoUrl,
+      @required this.displayName,
+      @required this.uid});
 
   final String uid;
+  final String photoUrl;
+  final String displayName;
 }
 
 abstract class AuthBase {
@@ -37,7 +42,8 @@ class Auth implements AuthBase {
     if (user == null) {
       return null;
     }
-    return User(uid: user.uid);
+    return User(
+        uid: user.uid, displayName: user.displayName, photoUrl: user.photoUrl);
   }
 
   Stream<User> get onAuthStateChanged {
