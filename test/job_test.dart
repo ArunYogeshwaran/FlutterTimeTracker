@@ -16,5 +16,23 @@ void main() {
       final job = Job.fromMap(map, 'abc');
       expect(job, Job(name: 'Blogging', ratePerHour: 10, id: 'abc'));
     });
+
+    test('missing name', () {
+      final map = {
+        'ratePerHour': 10,
+      };
+      final job = Job.fromMap(map, 'abc');
+      expect(job, null);
+    });
+  });
+
+  group('toMap', () {
+    test('valid name, ratePerHour', () {
+      final job = Job(name: 'Blogging', ratePerHour: 10, id: 'abc');
+      expect(job.toMap(), {
+        'name': 'Blogging',
+        'ratePerHour': 10,
+      });
+    });
   });
 }

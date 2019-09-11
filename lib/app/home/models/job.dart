@@ -14,6 +14,9 @@ class Job {
       return null;
     }
     final String name = data['name'];
+    if (name == null) {
+      return null;
+    }
     final int ratePerHour = data['ratePerHour'];
     return Job(id: documentId, name: name, ratePerHour: ratePerHour);
   }
@@ -23,6 +26,11 @@ class Job {
       'name': name,
       'ratePerHour': ratePerHour,
     };
+  }
+
+  @override
+  String toString() {
+    return 'id: $id, name: $name, rate: $ratePerHour';
   }
 
   @override
