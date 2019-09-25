@@ -25,4 +25,36 @@ void main() {
       ),
     );
   }
+
+  group('sign in',  () {
+    testWidgets('sign in email password in never called', (WidgetTester tester) async {
+      await pumpEmailSignInForm(tester);
+
+      final signInButton = find.text('Sign in');
+      await tester.tap(signInButton);
+      verifyNever(mockAuth.signInWithEmailAndPassword(any, any));
+    });
+
+    testWidgets('sign in email password called', (WidgetTester tester) async {
+      await pumpEmailSignInForm(tester);
+
+      const email = 'email@email.com';
+      const password = 'password';
+      final emailField = find.byKey(Key('email_signin'));
+      expect(emailField, findsOneWidget);
+      await tester.enterText(emailField, email);
+
+      final passwordField = find.byKey(Key('password_signin'));
+      expect(passwordField, findsOneWidget);
+      await tester.enterText(passwordField, password);
+
+      // When running tests, wigdets are not rebuilt when setState is called
+      await tester.pump();
+
+      final signInButton = find.text('Sign in');
+      await tester.tap(signInButton);
+
+      verify(mockAuth.signInWithEmailAndPassword(email, password)).called(1);
+    });
+  });
 }
