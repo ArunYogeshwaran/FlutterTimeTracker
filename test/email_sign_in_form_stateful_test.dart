@@ -57,4 +57,69 @@ void main() {
       verify(mockAuth.signInWithEmailAndPassword(email, password)).called(1);
     });
   });
+
+
+  group('register',  () {
+    testWidgets('toggle to reg mode', (WidgetTester tester) async {
+      await pumpEmailSignInForm(tester);
+
+      final registerButton = find.text('Need an account? Register');
+      await tester.tap(registerButton);
+
+      await tester.pump();
+
+      final createAccountButton = find.text('Create an account');
+      expect(createAccountButton, findsOneWidget);
+    });
+
+    testWidgets('sign in email password called', (WidgetTester tester) async {
+      await pumpEmailSignInForm(tester);
+
+      const email = 'email@email.com';
+      const password = 'password';
+
+      final registerButton = find.text('Need an account? Register');
+      await tester.tap(registerButton);
+      await tester.pump();
+
+      final emailField = find.byKey(Key('email_signin'));
+      expect(emailField, findsOneWidget);
+      await tester.enterText(emailField, email);
+
+      final passwordField = find.byKey(Key('password_signin'));
+      expect(passwordField, findsOneWidget);
+      await tester.enterText(passwordField, password);
+
+      // When running tests, wigdets are not rebuilt when setState is called
+      await tester.pump();
+
+      final signInButton = find.text('Sign in');
+      await tester.tap(signInButton);
+
+      verify(mockAuth.signInWithEmailAndPassword(email, password)).called(1);
+    });
+
+    testWidgets('register with email password called', (WidgetTester tester) async {
+      await pumpEmailSignInForm(tester);
+
+      const email = 'email@email.com';
+      const password = 'password';
+      final emailField = find.byKey(Key('email_signin'));
+      expect(emailField, findsOneWidget);
+      await tester.enterText(emailField, email);
+
+      final passwordField = find.byKey(Key('password_signin'));
+      expect(passwordField, findsOneWidget);
+      await tester.enterText(passwordField, password);
+
+      // When running tests, wigdets are not rebuilt when setState is called
+      await tester.pump();
+
+      final createAccountButton = find.text('Create an account');
+      expect(createAccountButton, findsOneWidget); 
+      await tester.tap(createAccountButton);
+
+      verify(mockAuth.createUserWithEmailAndPassword(email, password)).called(1);
+    });
+  });
 }
