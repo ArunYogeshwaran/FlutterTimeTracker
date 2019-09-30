@@ -6,6 +6,7 @@
 .pub/
 build/
 ios/.generated/
+lib/generated
 packages
 .flutter-plugins
 ios/Runner/GoogleService-Info.plist
