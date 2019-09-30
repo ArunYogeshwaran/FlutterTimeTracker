@@ -9,8 +9,8 @@ import 'package:meta/meta.dart';
 class User {
   User(
       {@required this.photoUrl,
-      @required this.displayName,
-      @required this.uid});
+      this.displayName,
+      this.uid});
 
   final String uid;
   final String photoUrl;

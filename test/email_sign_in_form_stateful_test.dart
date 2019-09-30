@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
@@ -28,8 +29,18 @@ void main() {
     );
   }
 
+  void stubSignInWithEmailAndPasswordSucceeds() {
+    when(mockAuth.signInWithEmailAndPassword(any, any))
+        .thenAnswer((_) => Future<User>.value(User(uid: '123')));
+  }
+
+  void stubSignInWithEmailAndPasswordThrows() {
+    when(mockAuth.signInWithEmailAndPassword(any, any))
+        .thenThrow(PlatformException(code: 'ERROR_WRONG_PASSWORD'));
+  }
+
   group('sign in', () {
-    testWidgets('sign in email password in never called',
+    testWidgets('sign in email password is never called',
         (WidgetTester tester) async {
       var signedIn = false;
       await pumpEmailSignInForm(tester, onSignedIn: () => signedIn = true);
@@ -43,6 +54,8 @@ void main() {
     testWidgets('sign in email password called', (WidgetTester tester) async {
       var signedIn = false;
       await pumpEmailSignInForm(tester, onSignedIn: () => signedIn = true);
+
+      stubSignInWithEmailAndPasswordSucceeds();
 
       const email = 'email@email.com';
       const password = 'password';
@@ -62,6 +75,32 @@ void main() {
 
       verify(mockAuth.signInWithEmailAndPassword(email, password)).called(1);
       expect(signedIn, true);
+    });
+
+    testWidgets('invalid un/pwd', (WidgetTester tester) async {
+      var signedIn = false;
+      await pumpEmailSignInForm(tester, onSignedIn: () => signedIn = true);
+
+      stubSignInWithEmailAndPasswordThrows();
+
+      const email = 'email@email.com';
+      const password = 'password';
+      final emailField = find.byKey(Key('email_signin'));
+      expect(emailField, findsOneWidget);
+      await tester.enterText(emailField, email);
+
+      final passwordField = find.byKey(Key('password_signin'));
+      expect(passwordField, findsOneWidget);
+      await tester.enterText(passwordField, password);
+
+      // When running tests, wigdets are not rebuilt when setState is called
+      await tester.pump();
+
+      final signInButton = find.text('Sign in');
+      await tester.tap(signInButton);
+
+      verify(mockAuth.signInWithEmailAndPassword(email, password)).called(1);
+      expect(signedIn, false);
     });
   });
 
