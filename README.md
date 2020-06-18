@@ -1,6 +1,6 @@
 # Time Tracker Flutter Course
 
-Source code for my Time Tracker Flutter Course on Udemy.
+Source code for my Time Tracker Flutter Course.
 
 ## Running the project with Firebase
 
